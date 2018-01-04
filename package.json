@@ -1,0 +1,24 @@
+{
+  "name": "trifid-plugin-renderer",
+  "description": "Trifid graph HTML render plugin",
+  "version": "0.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/zazuko/trifid-plugin-renderer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zazuko/trifid-plugin-renderer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zazuko/trifid-plugin-renderer/issues"
+  },
+  "scripts": {
+    "test": "standard && mocha"
+  },
+  "dependencies": {
+    "express-negotiate": "0.0.5",
+    "hijackresponse": "^3.0.0",
+    "lodash": "^4.17.4",
+    "stream-buffers": "^3.0.1"
+  },
+  "devDependencies": {}
+}
