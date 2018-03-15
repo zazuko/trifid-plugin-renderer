@@ -1,7 +1,9 @@
 /* global describe, it */
 
 const assert = require('assert')
+const clone = require('lodash/clone')
 const express = require('express')
+const hijackResponse = require('hijackresponse')
 const path = require('path')
 const renderer = require('..')
 const request = require('supertest')
@@ -95,6 +97,48 @@ describe('trifid-plugin-renderer', () => {
         .then((res) => {
           assert.deepEqual(res.body, content)
         })
+    })
+  })
+
+  it('should restore original request headers', () => {
+    const app = express()
+
+    let reqHeaders
+
+    app.use((req, res, next) => {
+      reqHeaders = clone(req.headers)
+
+      hijackResponse(res, (err, res) => {
+        if (err) {}
+
+        assert.deepEqual(res.req.headers, reqHeaders)
+
+        res.pipe(res)
+      })
+
+      next()
+    })
+
+    const context = {
+      middleware,
+      moduleLoader
+    }
+
+    return renderer.call(context, app, {
+      root: {
+        module: path.join(__dirname, 'support/dummy-renderer'),
+        alternativeMediaTypes: ['application/json']
+      }
+    }).then(() => {
+      const content = {key: 'value'}
+
+      app.use((req, res) => {
+        res.json(content)
+      })
+
+      return request(app)
+        .get('/')
+        .set('accept', 'text/html')
     })
   })
 })

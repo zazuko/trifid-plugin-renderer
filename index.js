@@ -1,4 +1,5 @@
 const accepts = require('accepts')
+const clone = require('lodash/clone')
 const difference = require('lodash/difference')
 const hijackResponse = require('hijackresponse')
 const streamBuffers = require('stream-buffers')
@@ -23,6 +24,9 @@ function middleware (options) {
     if (accept.type(mediaTypes) !== 'html') {
       return next()
     }
+
+    // keep original headers to restore them later
+    const reqHeaders = clone(req.headers)
 
     // remove all request header sent from the client which are not required
     difference(Object.keys(req.headers), requestHeaderWhitelist).forEach((name) => {
@@ -49,6 +53,9 @@ function middleware (options) {
       const graphBuffer = new streamBuffers.WritableStreamBuffer()
 
       graphBuffer.on('finish', () => {
+        // restore original request headers for other hijack middlewares
+        req.headers = reqHeaders
+
         const graphString = graphBuffer.getContentsAsString('utf8')
 
         // don't process graph if it's bigger than graphSizeLimit
