@@ -68,8 +68,8 @@ function middleware (options) {
         res.locals.graph = graphString
 
         // remove all response headers sent from handler
-        if (res._headers) {
-          difference(Object.keys(res._headers), responseHeaderWhitelist).forEach((name) => {
+        if (res.getHeaders()) {
+          difference(Object.keys(res.getHeaders()), responseHeaderWhitelist).forEach((name) => {
             res.removeHeader(name)
           })
         }
