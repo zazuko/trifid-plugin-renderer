@@ -12,7 +12,7 @@ const moduleLoader = require('trifid-core/lib/module-loader')
 
 describe('trifid-plugin-renderer', () => {
   it('should be a factory', () => {
-    assert.equal(typeof renderer, 'function')
+    assert.strictEqual(typeof renderer, 'function')
   })
 
   it('should do nothing if request doesn\'t accept html', () => {
@@ -28,7 +28,7 @@ describe('trifid-plugin-renderer', () => {
         module: path.join(__dirname, 'support/dummy-renderer')
       }
     }).then(() => {
-      const content = {key: 'value'}
+      const content = { key: 'value' }
 
       app.use((req, res) => {
         res.json(content)
@@ -38,7 +38,7 @@ describe('trifid-plugin-renderer', () => {
         .get('/')
         .set('accept', 'application/json')
         .then((res) => {
-          assert.deepEqual(res.body, content)
+          assert.deepStrictEqual(res.body, content)
         })
     })
   })
@@ -56,7 +56,7 @@ describe('trifid-plugin-renderer', () => {
         module: path.join(__dirname, 'support/dummy-renderer')
       }
     }).then(() => {
-      const content = {key: 'value'}
+      const content = { key: 'value' }
 
       app.use((req, res) => {
         res.json(content)
@@ -66,7 +66,7 @@ describe('trifid-plugin-renderer', () => {
         .get('/')
         .set('accept', 'text/html')
         .then((res) => {
-          assert.deepEqual(res.text, '<html><head><script type="application/json">' + JSON.stringify(content) + '</script></head></html>')
+          assert.deepStrictEqual(res.text, '<html><head><script type="application/json">' + JSON.stringify(content) + '</script></head></html>')
         })
     })
   })
@@ -85,7 +85,7 @@ describe('trifid-plugin-renderer', () => {
         alternativeMediaTypes: ['application/json']
       }
     }).then(() => {
-      const content = {key: 'value'}
+      const content = { key: 'value' }
 
       app.use((req, res) => {
         res.json(content)
@@ -95,7 +95,7 @@ describe('trifid-plugin-renderer', () => {
         .get('/')
         .set('accept', 'application/json;q=0.9,text/html;q=0.8')
         .then((res) => {
-          assert.deepEqual(res.body, content)
+          assert.deepStrictEqual(res.body, content)
         })
     })
   })
@@ -111,7 +111,7 @@ describe('trifid-plugin-renderer', () => {
       hijackResponse(res, (err, res) => {
         if (err) {}
 
-        assert.deepEqual(res.req.headers, reqHeaders)
+        assert.deepStrictEqual(res.req.headers, reqHeaders)
 
         res.pipe(res)
       })
@@ -130,7 +130,7 @@ describe('trifid-plugin-renderer', () => {
         alternativeMediaTypes: ['application/json']
       }
     }).then(() => {
-      const content = {key: 'value'}
+      const content = { key: 'value' }
 
       app.use((req, res) => {
         res.json(content)
