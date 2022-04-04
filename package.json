@@ -15,16 +15,16 @@
     "test": "standard && mocha"
   },
   "dependencies": {
-    "accepts": "^1.3.4",
-    "hijackresponse": "^4.0.0",
-    "lodash": "^4.17.4",
-    "stream-buffers": "^3.0.1"
+    "accepts": "^1.3.8",
+    "hijackresponse": "^4.0.1",
+    "lodash": "^4.17.21",
+    "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
-    "express": "^4.16.2",
-    "mocha": "^6.1.4",
-    "standard": "^12.0.1",
-    "supertest": "^4.0.2",
+    "express": "^4.17.3",
+    "mocha": "^9.2.2",
+    "standard": "^16.0.4",
+    "supertest": "^6.2.2",
     "trifid-core": "github:zazuko/trifid-core"
   },
   "engines": {

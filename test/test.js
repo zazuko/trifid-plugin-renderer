@@ -108,11 +108,8 @@ describe('trifid-plugin-renderer', () => {
     app.use((req, res, next) => {
       reqHeaders = clone(req.headers)
 
-      hijackResponse(res, (err, res) => {
-        if (err) {}
-
+      hijackResponse(res, (_err, res) => {
         assert.deepStrictEqual(res.req.headers, reqHeaders)
-
         res.pipe(res)
       })
 
