@@ -34,7 +34,7 @@ function middleware (options) {
     })
 
     // set html middleware request headers for the handler
-    req.headers['accept'] = options.renderer.accept
+    req.headers.accept = options.renderer.accept
 
     hijackResponse(res, (err, res) => {
       if (err) {

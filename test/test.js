@@ -58,7 +58,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 
@@ -87,7 +87,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 
@@ -108,11 +108,8 @@ describe('trifid-plugin-renderer', () => {
     app.use((req, res, next) => {
       reqHeaders = clone(req.headers)
 
-      hijackResponse(res, (err, res) => {
-        if (err) {}
-
+      hijackResponse(res, (_err, res) => {
         assert.deepStrictEqual(res.req.headers, reqHeaders)
-
         res.pipe(res)
       })
 
@@ -132,7 +129,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 
