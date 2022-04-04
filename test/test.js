@@ -58,7 +58,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 
@@ -87,7 +87,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 
@@ -129,7 +129,7 @@ describe('trifid-plugin-renderer', () => {
     }).then(() => {
       const content = { key: 'value' }
 
-      app.use((req, res) => {
+      app.use((_req, res) => {
         res.json(content)
       })
 

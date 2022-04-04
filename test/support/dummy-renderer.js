@@ -3,11 +3,11 @@ class DummyRenderer {
     this.accept = 'application/ld+json'
   }
 
-  render (req, res) {
+  render (_req, res) {
     res.end('<html><head><script type="application/json">' + res.locals.graph + '</script></head></html>')
   }
 
-  error (req, res) {
+  error (_req, res) {
     res.end('<html><head><script type="application/json">{"status": ' + res.statusCode + '}</script></head></html>')
   }
 }
