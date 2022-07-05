@@ -1,8 +1,9 @@
-const accepts = require('accepts')
-const clone = require('lodash/clone')
-const difference = require('lodash/difference')
-const hijackResponse = require('hijackresponse')
-const streamBuffers = require('stream-buffers')
+import accepts from 'accepts'
+import clone from 'lodash/clone.js'
+import difference from 'lodash/difference.js'
+import hijackResponse from 'hijackresponse'
+import streamBuffers from 'stream-buffers'
+import path from 'path'
 
 const requestHeaderWhitelist = [
   'host',
@@ -92,16 +93,29 @@ function middleware (options) {
   }
 }
 
-function renderer (router, options) {
-  return this.middleware.mountAll(router, options, (options) => {
-    // load render module
-    const Renderer = this.moduleLoader.require(options.module)
-
-    // create instance and forward options to the constructor
-    options.renderer = new Renderer(options)
-
-    return middleware(options)
-  })
+const resolvePath = (modulePath) => {
+  if (['.', '/'].includes(modulePath.slice(0, 1))) {
+    return path.resolve(modulePath)
+  } else {
+    return modulePath
+  }
 }
 
-module.exports = renderer
+const loader = async (modulePath) => {
+  const middleware = await import(resolvePath(modulePath))
+  return middleware.default
+}
+
+async function createRenderer (trifid) {
+  const { config } = trifid
+
+  // load render module
+  const Renderer = await loader(config.module)
+
+  // create instance and forward options to the constructor
+  config.renderer = new Renderer(config)
+
+  return middleware(config)
+}
+
+export default createRenderer

@@ -12,4 +12,4 @@ class DummyRenderer {
   }
 }
 
-module.exports = DummyRenderer
+export default DummyRenderer
