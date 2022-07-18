@@ -5,6 +5,10 @@ import hijackResponse from 'hijackresponse'
 import streamBuffers from 'stream-buffers'
 import path from 'path'
 
+import cottonCandy from 'cotton-candy'
+import cottonCandyInclude from 'cotton-candy/include.js'
+import cottonCandySetterGetter from 'cotton-candy/setter-getter.js'
+
 const requestHeaderWhitelist = [
   'host',
   'x-forwarded-host',
@@ -20,8 +24,8 @@ function middleware (options) {
   const mediaTypes = (options.alternativeMediaTypes || []).concat(['html'])
 
   return (req, res, next) => {
-    const accept = accepts(req)
 
+    const accept = accepts(req)
     if (accept.type(mediaTypes) !== 'html') {
       return next()
     }
@@ -54,6 +58,7 @@ function middleware (options) {
       const graphBuffer = new streamBuffers.WritableStreamBuffer()
 
       graphBuffer.on('finish', () => {
+
         // restore original request headers for other hijack middlewares
         req.headers = reqHeaders
 
@@ -107,7 +112,19 @@ const loader = async (modulePath) => {
 }
 
 async function createRenderer (trifid) {
-  const { config } = trifid
+  const { config, server } = trifid
+
+  // Load ES6 based templates
+  if (server){
+    server.engine('html', cottonCandy({
+      plugins: [
+        cottonCandyInclude,
+        cottonCandySetterGetter
+      ],
+      resolve: resolvePath
+    }))
+    server.set('view engine', 'cotton-candy')
+  }
 
   // load render module
   const Renderer = await loader(config.module)
