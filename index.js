@@ -24,7 +24,6 @@ function middleware (options) {
   const mediaTypes = (options.alternativeMediaTypes || []).concat(['html'])
 
   return (req, res, next) => {
-
     const accept = accepts(req)
     if (accept.type(mediaTypes) !== 'html') {
       return next()
@@ -58,7 +57,6 @@ function middleware (options) {
       const graphBuffer = new streamBuffers.WritableStreamBuffer()
 
       graphBuffer.on('finish', () => {
-
         // restore original request headers for other hijack middlewares
         req.headers = reqHeaders
 
@@ -115,7 +113,7 @@ async function createRenderer (trifid) {
   const { config, server } = trifid
 
   // Load ES6 based templates
-  if (server){
+  if (server) {
     server.engine('html', cottonCandy({
       plugins: [
         cottonCandyInclude,
