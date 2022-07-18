@@ -1,8 +1,13 @@
-const accepts = require('accepts')
-const clone = require('lodash/clone')
-const difference = require('lodash/difference')
-const hijackResponse = require('hijackresponse')
-const streamBuffers = require('stream-buffers')
+import accepts from 'accepts'
+import clone from 'lodash/clone.js'
+import difference from 'lodash/difference.js'
+import hijackResponse from 'hijackresponse'
+import streamBuffers from 'stream-buffers'
+import path from 'path'
+
+import cottonCandy from 'cotton-candy'
+import cottonCandyInclude from 'cotton-candy/include.js'
+import cottonCandySetterGetter from 'cotton-candy/setter-getter.js'
 
 const requestHeaderWhitelist = [
   'host',
@@ -20,7 +25,6 @@ function middleware (options) {
 
   return (req, res, next) => {
     const accept = accepts(req)
-
     if (accept.type(mediaTypes) !== 'html') {
       return next()
     }
@@ -92,16 +96,41 @@ function middleware (options) {
   }
 }
 
-function renderer (router, options) {
-  return this.middleware.mountAll(router, options, (options) => {
-    // load render module
-    const Renderer = this.moduleLoader.require(options.module)
-
-    // create instance and forward options to the constructor
-    options.renderer = new Renderer(options)
-
-    return middleware(options)
-  })
+const resolvePath = (modulePath) => {
+  if (['.', '/'].includes(modulePath.slice(0, 1))) {
+    return path.resolve(modulePath)
+  } else {
+    return modulePath
+  }
 }
 
-module.exports = renderer
+const loader = async (modulePath) => {
+  const middleware = await import(resolvePath(modulePath))
+  return middleware.default
+}
+
+async function createRenderer (trifid) {
+  const { config, server } = trifid
+
+  // Load ES6 based templates
+  if (server) {
+    server.engine('html', cottonCandy({
+      plugins: [
+        cottonCandyInclude,
+        cottonCandySetterGetter
+      ],
+      resolve: resolvePath
+    }))
+    server.set('view engine', 'cotton-candy')
+  }
+
+  // load render module
+  const Renderer = await loader(config.module)
+
+  // create instance and forward options to the constructor
+  config.renderer = new Renderer(config)
+
+  return middleware(config)
+}
+
+export default createRenderer
